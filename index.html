@@ -1,0 +1,1295 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DZ Bac Bank | بنك تمارين البكالوريا الجزائرية</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Cairo & Tajawal -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Cairo', 'Tajawal', 'sans-serif'],
+                        tajawal: ['Tajawal', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: {
+                            50: '#eef2ff',
+                            100: '#e0e7ff',
+                            500: '#6366f1',
+                            600: '#4f46e5',
+                            700: '#4338ca',
+                            900: '#312e81',
+                        },
+                        emerald: {
+                            500: '#10b981',
+                            600: '#059669',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Cairo', 'Tajawal', sans-serif;
+            transition: background-color 0.25s ease, color 0.25s ease;
+        }
+        ::-webkit-scrollbar {
+            width: 7px;
+            height: 7px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(156, 163, 175, 0.4);
+            border-radius: 9999px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(156, 163, 175, 0.7);
+        }
+        .math-expr {
+            direction: ltr;
+            display: inline-block;
+            font-family: 'Cambria Math', 'Times New Roman', serif;
+            background: rgba(99, 102, 241, 0.08);
+            padding: 1px 6px;
+            border-radius: 6px;
+            font-weight: 600;
+        }
+        .dark .math-expr {
+            background: rgba(129, 140, 248, 0.16);
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 dark:bg-slate-950 dark:text-slate-100 min-h-screen flex flex-col">
+
+    <!-- Top Navigation Bar -->
+    <header class="sticky top-0 z-40 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-b border-slate-200 dark:border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16 gap-3">
+                <!-- Brand Logo -->
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-600 to-emerald-500 flex items-center justify-center text-white shadow-md shadow-indigo-500/20">
+                        <i data-lucide="graduation-cap" class="w-6 h-6"></i>
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <h1 class="font-extrabold text-lg sm:text-xl tracking-tight text-slate-900 dark:text-white">DZ Bac Bank</h1>
+                            <span class="hidden sm:inline-block text-[11px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800">BAC 2026</span>
+                        </div>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 hidden sm:block">بنك التمارين المصنّفة حسب الوحدات والدروس الرسمية</p>
+                    </div>
+                </div>
+
+                <!-- Search Bar (Desktop) -->
+                <div class="hidden md:flex flex-1 max-w-md mx-4">
+                    <div class="relative w-full">
+                        <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute right-3.5 top-1/2 -translate-y-1/2"></i>
+                        <input id="searchInput" type="text" placeholder="ابحث عن درس، سنة (مثلاً 2024)، قذيفة، متتاليات..." 
+                            class="w-full pr-10 pl-4 py-2 text-sm rounded-xl bg-slate-100 dark:bg-slate-800 border border-transparent focus:border-indigo-500 focus:bg-white dark:focus:bg-slate-900 outline-none transition">
+                    </div>
+                </div>
+
+                <!-- Right Actions -->
+                <div class="flex items-center gap-2">
+                    <button onclick="toggleBookmarksFilter()" id="bookmarkFilterBtn" title="التمارين المحفوظة للمراجعة"
+                        class="p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition flex items-center gap-1.5 text-xs font-semibold">
+                        <i data-lucide="bookmark" class="w-4 h-4"></i>
+                        <span class="hidden lg:inline">للمراجعة</span>
+                        <span id="bookmarkCountBadge" class="bg-amber-100 text-amber-700 dark:bg-amber-900/50 dark:text-amber-300 px-1.5 py-0.2 rounded-full text-[11px]">0</span>
+                    </button>
+
+                    <button onclick="promptAdminAuth()" 
+                        class="px-3 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs sm:text-sm font-bold shadow-sm shadow-indigo-600/20 transition flex items-center gap-1.5" title="خاص بالأستاذ / المشرف">
+                        <i data-lucide="shield-check" class="w-4 h-4"></i>
+                        <span>إضافة تمرين (مشرف)</span>
+                    </button>
+
+                    <label title="استيراد قاعدة بيانات JSON" class="cursor-pointer p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition hidden sm:flex items-center gap-1 text-xs font-bold">
+                        <i data-lucide="upload" class="w-4 h-4"></i>
+                        <span class="hidden xl:inline">استيراد</span>
+                        <input type="file" accept=".json" onchange="importDatabase(event)" class="hidden">
+                    </label>
+
+                    <button onclick="exportDatabase()" title="تصدير قاعدة البيانات JSON"
+                        class="p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition hidden sm:flex">
+                        <i data-lucide="download" class="w-4 h-4"></i>
+                    </button>
+
+                    <button onclick="toggleDarkMode()" id="themeToggleBtn" title="الوضع الليلي / النهاري"
+                        class="p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition">
+                        <i data-lucide="moon" class="w-4 h-4 dark:hidden"></i>
+                        <i data-lucide="sun" class="w-4 h-4 hidden dark:block text-amber-400"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Mobile Search Bar -->
+            <div class="pb-3 md:hidden">
+                <div class="relative w-full">
+                    <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute right-3.5 top-1/2 -translate-y-1/2"></i>
+                    <input id="searchInputMobile" type="text" placeholder="ابحث عن تمرين، وحدة، سنة..." 
+                        class="w-full pr-10 pl-4 py-2 text-sm rounded-xl bg-slate-100 dark:bg-slate-800 border border-transparent focus:border-indigo-500 outline-none">
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Subject Selector & Stream Filter Strip -->
+    <section class="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 space-y-3">
+            <!-- Subjects Tabs -->
+            <div id="subjectTabs" class="flex items-center gap-2 overflow-x-auto pb-1 no-scrollbar">
+                <!-- Populated by JS -->
+            </div>
+
+            <!-- Stream Pills + Subject Progress Bar -->
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-1 border-t border-slate-100 dark:border-slate-800/80">
+                <div class="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0">
+                    <span class="text-xs font-bold text-slate-400 ml-1 shrink-0">الشعبة:</span>
+                    <div id="streamPills" class="flex items-center gap-1.5">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+
+                <!-- Progress Tracker -->
+                <div class="flex items-center gap-3 bg-slate-50 dark:bg-slate-800/70 px-3 py-1.5 rounded-xl border border-slate-200/70 dark:border-slate-700/70 shrink-0">
+                    <div class="text-xs font-semibold text-slate-600 dark:text-slate-300">
+                        تقدمك في المادة: <span id="progressText" class="font-extrabold text-emerald-600 dark:text-emerald-400">0 / 0</span>
+                    </div>
+                    <div class="w-24 sm:w-32 h-2 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
+                        <div id="progressBar" class="h-full bg-gradient-to-l from-emerald-500 to-indigo-500 rounded-full transition-all duration-500" style="width: 0%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Workspace Layout -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-1 w-full">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+            
+            <!-- Right Sidebar: Comprehensive Unit & Sub-topic Hierarchy -->
+            <aside class="lg:col-span-4 xl:col-span-3 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
+                <div class="p-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
+                    <div class="flex items-center gap-2">
+                        <i data-lucide="folder-tree" class="w-4 h-4 text-indigo-600 dark:text-indigo-400"></i>
+                        <h2 class="font-bold text-sm text-slate-900 dark:text-white">فهرس الوحدات والدروس</h2>
+                    </div>
+                    <button onclick="resetTopicSelection()" class="text-xs font-semibold text-indigo-600 dark:text-indigo-400 hover:underline">
+                        عرض الكل
+                    </button>
+                </div>
+
+                <div id="topicSidebar" class="p-3 space-y-2 max-h-[65vh] lg:max-h-[calc(100vh-240px)] overflow-y-auto">
+                    <!-- Accordion Units & Subtopics populated by JS -->
+                </div>
+            </aside>
+
+            <!-- Left Main Feed: Filtered Exercises -->
+            <section class="lg:col-span-8 xl:col-span-9 space-y-4">
+                <!-- Active Filter Breadcrumb & Sort Bar -->
+                <div class="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm flex flex-wrap items-center justify-between gap-3">
+                    <div>
+                        <div class="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400 mb-0.5">
+                            <span id="breadcrumbSubject">الفيزياء</span>
+                            <i data-lucide="chevron-left" class="w-3.5 h-3.5"></i>
+                            <span id="breadcrumbUnit" class="font-semibold text-indigo-600 dark:text-indigo-400">جميع الوحدات</span>
+                        </div>
+                        <h3 id="feedHeading" class="font-extrabold text-base sm:text-lg text-slate-900 dark:text-white">
+                            جميع تمارين الفيزياء المتاحة
+                        </h3>
+                    </div>
+
+                    <div class="flex items-center gap-2">
+                        <select id="yearFilter" onchange="renderExercises()" 
+                            class="text-xs font-semibold bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 outline-none">
+                            <option value="all">كل السنوات (2009-2026)</option>
+                        </select>
+                        <select id="difficultyFilter" onchange="renderExercises()" 
+                            class="text-xs font-semibold bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 outline-none">
+                            <option value="all">كل المستويات</option>
+                            <option value="سهل">مستوى: سهل</option>
+                            <option value="متوسط">مستوى: متوسط</option>
+                            <option value="ممتاز للتحضير">مستوى: ممتاز للتحضير</option>
+                        </select>
+                        <span id="resultsCount" class="text-xs font-bold px-3 py-2 rounded-xl bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300">
+                            0 تمرين
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Exercises Cards Grid -->
+                <div id="exercisesGrid" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <!-- Exercise cards populated by JS -->
+                </div>
+
+                <!-- Empty State -->
+                <div id="emptyState" class="hidden bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-10 text-center">
+                    <div class="w-12 h-12 rounded-2xl bg-slate-100 dark:bg-slate-800 text-slate-400 flex items-center justify-center mx-auto mb-3">
+                        <i data-lucide="search-x" class="w-6 h-6"></i>
+                    </div>
+                    <h4 class="font-bold text-base text-slate-800 dark:text-slate-200 mb-1">لا توجد تمارين مطابقة للبحث</h4>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 mb-4">جرب تغيير الفلتر أو إضافة تمرين جديد في هذا الدرس.</p>
+                    <button onclick="resetAllFilters()" class="px-4 py-2 rounded-xl bg-indigo-600 text-white text-xs font-bold hover:bg-indigo-700 transition">
+                        إعادة ضبط الفلاتر
+                    </button>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Preview Modal (Exercise & Official Solution Media Viewer) -->
+    <div id="previewModal" class="fixed inset-0 z-50 hidden bg-slate-950/75 backdrop-blur-sm flex items-center justify-center p-2 sm:p-5">
+        <div class="bg-white dark:bg-slate-900 w-full max-w-5xl rounded-2xl border border-slate-200 dark:border-slate-800 shadow-2xl overflow-hidden flex flex-col h-[92vh]">
+            <!-- Modal Header -->
+            <div class="px-5 py-3.5 border-b border-slate-200 dark:border-slate-800 flex items-start justify-between gap-4 shrink-0">
+                <div>
+                    <div class="flex flex-wrap items-center gap-2 mb-1">
+                        <span id="modalYearBadge" class="text-xs font-extrabold px-2.5 py-0.5 rounded-lg bg-indigo-100 text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300">BAC 2024</span>
+                        <span id="modalStreamBadge" class="text-xs font-semibold px-2.5 py-0.5 rounded-lg bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300">علوم تجريبية</span>
+                        <span id="modalSubtopicBadge" class="text-xs font-semibold px-2.5 py-0.5 rounded-lg bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300">المستوي المائل</span>
+                    </div>
+                    <h3 id="modalTitle" class="font-extrabold text-sm sm:text-lg text-slate-900 dark:text-white">عنوان التمرين</h3>
+                </div>
+                <button onclick="closePreviewModal()" class="p-2 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <!-- Modal Tab Switcher & External Media Controls -->
+            <div class="px-5 pt-2.5 bg-slate-50 dark:bg-slate-950/50 border-b border-slate-200 dark:border-slate-800 flex flex-wrap items-center justify-between gap-2 shrink-0">
+                <div class="flex items-center gap-2">
+                    <button id="tabBtnStatement" onclick="switchModalTab('statement')" 
+                        class="px-4 py-2 text-xs sm:text-sm font-bold rounded-t-xl border-b-2 border-indigo-600 text-indigo-600 dark:text-indigo-400 bg-white dark:bg-slate-900 flex items-center gap-1.5">
+                        <i data-lucide="file-image" class="w-4 h-4"></i>
+                        <span>موضوع التمرين (PDF / صورة)</span>
+                    </button>
+                    <button id="tabBtnSolution" onclick="switchModalTab('solution')" 
+                        class="px-4 py-2 text-xs sm:text-sm font-bold rounded-t-xl border-b-2 border-transparent text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 flex items-center gap-1.5">
+                        <i data-lucide="file-check-2" class="w-4 h-4"></i>
+                        <span>الحل النموذجي (PDF / صورة)</span>
+                    </button>
+                </div>
+
+                <div class="flex items-center gap-2 mb-1">
+                    <a id="modalExternalFileLink" href="#" target="_blank" rel="noopener noreferrer"
+                        class="px-3 py-1.5 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-700 dark:bg-indigo-950/60 dark:text-indigo-300 text-xs font-bold flex items-center gap-1.5 transition">
+                        <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+                        <span>فتح الملف / تحميل</span>
+                    </a>
+                    <a id="modalVideoLink" href="#" target="_blank" rel="noopener noreferrer"
+                        class="px-3 py-1.5 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-600 dark:bg-rose-950/50 dark:text-rose-300 text-xs font-bold flex items-center gap-1.5 transition">
+                        <i data-lucide="youtube" class="w-4 h-4"></i>
+                        <span>فيديو الشرح</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Modal Body Media Viewer -->
+            <div id="modalBodyContent" class="flex-1 overflow-y-auto bg-slate-100/70 dark:bg-slate-950 p-3 sm:p-4 flex flex-col">
+                <!-- Populated dynamically with PDF iframe or Zoomable Image -->
+            </div>
+
+            <!-- Modal Footer Actions -->
+            <div class="px-5 py-3 bg-slate-50 dark:bg-slate-950/60 border-t border-slate-200 dark:border-slate-800 flex flex-wrap items-center justify-between gap-3 shrink-0">
+                <div class="flex items-center gap-2">
+                    <button id="modalSolvedBtn" onclick="toggleCurrentSolved()" 
+                        class="px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 transition border">
+                        <i data-lucide="check-circle-2" class="w-4 h-4"></i>
+                        <span>تم الحل ✓</span>
+                    </button>
+                    <button id="modalBookmarkBtn" onclick="toggleCurrentBookmark()" 
+                        class="px-3.5 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 transition border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800">
+                        <i data-lucide="bookmark" class="w-4 h-4"></i>
+                        <span>حفظ للمراجعة</span>
+                    </button>
+                </div>
+                <button onclick="closePreviewModal()" class="px-4 py-2 rounded-xl bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-200 text-xs font-bold hover:opacity-90">
+                    إغلاق
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Exercise Modal (PDF / Image Upload & Link Support) -->
+    <div id="addModal" class="fixed inset-0 z-50 hidden bg-slate-950/70 backdrop-blur-sm flex items-center justify-center p-3 sm:p-6">
+        <div class="bg-white dark:bg-slate-900 w-full max-w-2xl rounded-2xl border border-slate-200 dark:border-slate-800 shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+            <div class="px-5 py-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                    <i data-lucide="file-plus-2" class="w-5 h-5 text-indigo-600"></i>
+                    <h3 class="font-extrabold text-base text-slate-900 dark:text-white">إضافة تمرين جديد (ملف PDF أو صورة)</h3>
+                </div>
+                <button onclick="closeAddModal()" class="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <form id="addExerciseForm" onsubmit="handleAddExercise(event)" class="p-5 overflow-y-auto space-y-4 text-xs sm:text-sm">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                        <label class="block font-bold mb-1">المادة</label>
+                        <select id="newSubject" onchange="populateNewUnitSelect()" required class="w-full p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 outline-none"></select>
+                    </div>
+                    <div>
+                        <label class="block font-bold mb-1">الوحدة</label>
+                        <select id="newUnit" onchange="populateNewSubtopicSelect()" required class="w-full p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 outline-none"></select>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                        <label class="block font-bold mb-1">الدرس الجزئي (التصنيف الدقيق)</label>
+                        <select id="newSubtopic" required class="w-full p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 outline-none"></select>
+                    </div>
+                    <div>
+                        <label class="block font-bold mb-1">الشعبة</label>
+                        <select id="newStream" required class="w-full p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 outline-none">
+                            <option value="علوم تجريبية">علوم تجريبية</option>
+                            <option value="رياضيات">رياضيات</option>
+                            <option value="تقني رياضي">تقني رياضي</option>
+                            <option value="جميع الشعب">جميع الشعب</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <div>
+                        <label class="block font-bold mb-1">سنة البكالوريا / المصدر</label>
+                        <input id="newYear" type="text" placeholder="مثال: BAC 2024" required class="w-full p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 outline-none">
+                    </div>
+                    <div>
+                        <label class="block font-bold mb-1">المستوى</label>
+                        <select id="newDifficulty" class="w-full p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 outline-none">
+                            <option value="سهل">سهل</option>
+                            <option value="متوسط" selected>متوسط</option>
+                            <option value="ممتاز للتحضير">ممتاز للتحضير</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block font-bold mb-1">رابط فيديو الشرح (اختياري)</label>
+                        <input id="newVideo" type="url" placeholder="https://youtube.com/..." class="w-full p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 outline-none">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block font-bold mb-1">عنوان التمرين</label>
+                    <input id="newTitle" type="text" placeholder="مثال: التمرين الثالث - حركة قذيفة (بكالوريا 2023)" required class="w-full p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 outline-none">
+                </div>
+
+                <!-- Exercise Media Input (URL or File Upload) -->
+                <div class="p-3.5 rounded-xl bg-indigo-50/50 dark:bg-indigo-950/20 border border-indigo-200/80 dark:border-indigo-900/60 space-y-2.5">
+                    <div class="flex items-center justify-between">
+                        <label class="font-extrabold text-indigo-900 dark:text-indigo-200 flex items-center gap-1.5">
+                            <i data-lucide="file-image" class="w-4 h-4"></i>
+                            <span>ملف موضوع التمرين (PDF أو صورة)</span>
+                        </label>
+                        <select id="newStatementType" class="text-xs font-bold bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-2 py-1">
+                            <option value="auto">تلقائي حسب الرابط/الملف</option>
+                            <option value="pdf">ملف PDF / Google Drive</option>
+                            <option value="image">صورة (PNG / JPG / WebP)</option>
+                        </select>
+                    </div>
+                    <input id="newStatementUrl" type="text" placeholder="ألصق رابط PDF أو Google Drive أو رابط صورة مباشرة..." class="w-full p-2.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 outline-none text-xs">
+                    <div class="flex items-center justify-between gap-2">
+                        <label class="cursor-pointer px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold inline-flex items-center gap-1.5 transition">
+                            <i data-lucide="upload-cloud" class="w-3.5 h-3.5"></i>
+                            <span>أو اختر ملف PDF / صورة من جهازك</span>
+                            <input id="newStatementFile" type="file" accept="application/pdf,image/*" onchange="handleLocalFileSelect(event, 'statement')" class="hidden">
+                        </label>
+                        <span id="statementFileStatus" class="text-[11px] font-semibold text-slate-500 dark:text-slate-400 truncate">لم يتم اختيار ملف محلي</span>
+                    </div>
+                </div>
+
+                <!-- Solution Media Input (URL or File Upload) -->
+                <div class="p-3.5 rounded-xl bg-emerald-50/50 dark:bg-emerald-950/20 border border-emerald-200/80 dark:border-emerald-900/60 space-y-2.5">
+                    <div class="flex items-center justify-between">
+                        <label class="font-extrabold text-emerald-900 dark:text-emerald-200 flex items-center gap-1.5">
+                            <i data-lucide="file-check-2" class="w-4 h-4"></i>
+                            <span>ملف الحل النموذجي (PDF أو صورة)</span>
+                        </label>
+                        <select id="newSolutionType" class="text-xs font-bold bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-2 py-1">
+                            <option value="auto">تلقائي حسب الرابط/الملف</option>
+                            <option value="pdf">ملف PDF / Google Drive</option>
+                            <option value="image">صورة (PNG / JPG / WebP)</option>
+                        </select>
+                    </div>
+                    <input id="newSolutionUrl" type="text" placeholder="ألصق رابط PDF أو Google Drive أو رابط صورة الحل النموذجي..." class="w-full p-2.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 outline-none text-xs">
+                    <div class="flex items-center justify-between gap-2">
+                        <label class="cursor-pointer px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold inline-flex items-center gap-1.5 transition">
+                            <i data-lucide="upload-cloud" class="w-3.5 h-3.5"></i>
+                            <span>أو اختر ملف الحل (PDF / صورة) من جهازك</span>
+                            <input id="newSolutionFile" type="file" accept="application/pdf,image/*" onchange="handleLocalFileSelect(event, 'solution')" class="hidden">
+                        </label>
+                        <span id="solutionFileStatus" class="text-[11px] font-semibold text-slate-500 dark:text-slate-400 truncate">لم يتم اختيار ملف محلي</span>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block font-bold mb-1">ملاحظات أو أفكار التمرين (اختياري)</label>
+                    <input id="newNotes" type="text" placeholder="مثال: يتضمن سؤال المناقشة البيانية وحساب المساحة بالتكامل" class="w-full p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 outline-none">
+                </div>
+
+                <div class="pt-2 flex items-center justify-end gap-2">
+                    <button type="button" onclick="closeAddModal()" class="px-4 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 font-bold">إلغاء</button>
+                    <button type="submit" class="px-5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold">حفظ التمرين في البنك</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Admin Password Prompt Modal -->
+    <div id="adminAuthModal" class="fixed inset-0 z-50 hidden bg-slate-950/75 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-slate-900 w-full max-w-md rounded-2xl border border-slate-200 dark:border-slate-800 shadow-2xl p-6 text-center space-y-4">
+            <div class="w-12 h-12 rounded-2xl bg-indigo-50 dark:bg-indigo-950/50 text-indigo-600 dark:text-indigo-400 flex items-center justify-center mx-auto">
+                <i data-lucide="lock" class="w-6 h-6"></i>
+            </div>
+            <div>
+                <h3 class="font-extrabold text-base text-slate-900 dark:text-white mb-1">تسجيل دخول المشرف (Admin)</h3>
+                <p class="text-xs text-slate-500 dark:text-slate-400">هذه الخاصية مخصصة للأستاذ صاحب الموقع فقط لإضافة تمارين البكالوريا.</p>
+            </div>
+            <div class="space-y-3 text-right">
+                <label class="block text-xs font-bold text-slate-700 dark:text-slate-300">كلمة المرور الخاصة بالمشرف:</label>
+                <input id="adminPasswordInput" type="password" placeholder="أدخل كلمة المرور السرية..." 
+                    class="w-full p-3 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm outline-none focus:border-indigo-500">
+            </div>
+            <div class="flex items-center gap-2 pt-2">
+                <button onclick="closeAdminAuthModal()" class="flex-1 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-bold text-xs">إلغاء</button>
+                <button onclick="verifyAdminPassword()" class="flex-1 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs shadow-sm">دخول</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="toast" class="fixed bottom-5 left-5 z-50 hidden bg-slate-900 dark:bg-white text-white dark:text-slate-900 px-4 py-2.5 rounded-xl shadow-lg text-xs font-bold flex items-center gap-2 transition-all">
+        <i data-lucide="check-circle" class="w-4 h-4 text-emerald-400 dark:text-emerald-600"></i>
+        <span id="toastMsg">تم الحفظ بنجاح</span>
+    </div>
+
+    <script>
+        // ==========================================
+        // 1. OFFICIAL CURRICULUM TAXONOMY
+        // ==========================================
+        const CURRICULUM = {
+            physics: {
+                id: 'physics',
+                name: 'الفيزياء',
+                icon: 'atom',
+                units: [
+                    {
+                        id: 'phy_u1',
+                        title: 'الوحدة 1: المتابعة الزمنية لتحول كيميائي',
+                        subtopics: ['المتابعة الزمنية وطرق القياس', 'سرعة التفاعل وتفسيرها المجهري', 'زمن نصف التفاعل t1/2']
+                    },
+                    {
+                        id: 'phy_u2',
+                        title: 'الوحدة 2: تطور جملة ميكانيكية',
+                        subtopics: [
+                            'السقوط الشاقولي (الحر والحقيقي)',
+                            'حركة جسم على مستوي أفقي ومائل',
+                            'حركة القذيفة في حقل ثقالي منتظم',
+                            'الحركات الكوكبية والأقمار الصناعية'
+                        ]
+                    },
+                    {
+                        id: 'phy_u3',
+                        title: 'الوحدة 3: دراسة ظواهر كهربائية',
+                        subtopics: ['ثنائي القطب RC (شحن وتفريغ المكثفة)', 'ثنائي القطب RL (تخريج الوشيعة وتيار التأسيس)', 'الاهتزازات القسرية والحرة في دائرة RLC متوالية']
+                    },
+                    {
+                        id: 'phy_u4',
+                        title: 'الوحدة 4: تطور جملة كيميائية نحو حالة التوازن',
+                        subtopics: ['تطور جملة كيميائية نحو حالة التوازن', 'محاليل الأحماض والأسس وقيم pH', 'التمدد والمعايرة اللونية']
+                    },
+                    {
+                        id: 'phy_u5',
+                        title: 'الوحدة 5: التحولات النووية',
+                        subtopics: ['التناقص الإشعاعي وقانون الأس', 'قانون الإشعاع والنشاط الإشعاعي', 'تكافؤ الكتلة والطاقة والانشطار والاندماج']
+                    },
+                    {
+                        id: 'phy_u6',
+                        title: 'الوحدة 6: مراقبة تطور جملة كيميائية',
+                        subtopics: ['تفاعل الأسترة والماهية', 'تحديد المردود والتحكم في الحالة التوازنية']
+                    },
+                    {
+                        id: 'phy_u7',
+                        title: 'الوحدة 7: التطورات المهتزة',
+                        subtopics: ['الاهتزازات الميكانيكية والكهربائية', 'دراسة الدارات المهتزة']
+                    },
+                    {
+                        id: 'phy_u8',
+                        title: 'الوحدة 8: مفهوم الموجة',
+                        subtopics: ['انتشار اضطراب في وسط مادي مرن', 'الموجات المتجانسة على سطح الماء والموجات الضوئية']
+                    }
+                ]
+            },
+            math: {
+                id: 'math',
+                name: 'الرياضيات',
+                icon: 'calculator',
+                units: [
+                    {
+                        id: 'math_u1',
+                        title: 'الدوال العددية والأسية واللوغاريتمية',
+                        subtopics: ['دراسة النهايات والاشتقاقية والاستمرارية', 'الدوال الأسية واللوغاريتمية النشرية', 'المناقشة البيانية وتطبيقات الدوال']
+                    },
+                    {
+                        id: 'math_u2',
+                        title: 'المتتاليات العددية',
+                        subtopics: ['المتتاليات الحسابية والهندسية', 'البرهان بالتراجع ونهاية متتالية وتقاربها', 'حساب المجاميع والجداءات']
+                    },
+                    {
+                        id: 'math_u3',
+                        title: 'الأعداد والحساب (لشعبتي الرياضيات وتقني رياضي فقط)',
+                        exclusiveStreams: ['رياضيات', 'تقني رياضي'],
+                        subtopics: [
+                            'القواسم والمضاعفات والقابلية في Z',
+                            'الموافقات في Z ومبرهنتا بيزو وغوص',
+                            'الأعداد الأولية وتطبيقاتها'
+                        ]
+                    },
+                    {
+                        id: 'math_u4',
+                        title: 'الأعداد المركبة والتحويلات النقطية',
+                        subtopics: ['الشكل الجبري والمثلثي والأسّي', 'تفسير هندسي والتحويلات النقطية (انسحاب، تحاكي، دوران)', 'حل المعادلات في المركبات']
+                    },
+                    {
+                        id: 'math_u5',
+                        title: 'الدوال الأصلية والحساب التكاملي',
+                        subtopics: ['الدوال الأصلية وحساب التكاملي', 'حساب المساحات والحجوم وحساب التجميع']
+                    },
+                    {
+                        id: 'math_u6',
+                        title: 'الاحتمالات',
+                        subtopics: ['الاحتمالات الشرطية ودستور الاحتمالات الكلية', 'المتغيرات العشوائية وقانون الاحتمال والتوقع الرياضي']
+                    },
+                    {
+                        id: 'math_u7',
+                        title: 'الهندسة في الفضاء',
+                        subtopics: ['المستقيمات والمستويات في الفضاء', 'الجداء السلمي والشعاعي وتطبيقات المسافات']
+                    }
+                ]
+            },
+            science: {
+                id: 'science',
+                name: 'علوم الطبيعة والحياة',
+                icon: 'leaf',
+                units: [
+                    {
+                        id: 'sci_u1',
+                        title: 'المجال 1: التخصص الوظيفي للبروتينات',
+                        subtopics: [
+                            'تركيب البروتين (المقر، الآلية، والوسيط الناقل)',
+                            'العلاقة بين بنية وتخصص البروتين',
+                            'النشاط الإنزيمي للبروتينات',
+                            'التخصص الوظيفي في الدفاع عن الذات (المناعة)',
+                            'التخصص الوظيفي في الاتصال العصبي (المشابك)'
+                        ]
+                    },
+                    {
+                        id: 'sci_u2',
+                        title: 'المجال 2: تحويل الطاقة على مستوى البنية الخلوية',
+                        subtopics: [
+                            'تحويل الطاقة الضوئية إلى طاقة كيميائية (التركيب الضوئي)',
+                            'تحويل الطاقة الكيميائية إلى ATP (التنفس والتخمر)',
+                            'بنية وهيكلة الخلايا الحية ودورها في تحويل الطاقة'
+                        ]
+                    },
+                    {
+                        id: 'sci_u3',
+                        title: 'المجال 3: التكتونية العامة',
+                        subtopics: [
+                            'بنية الكرة الأرضية والنشاط التكتوني (الصفائح، الغوص، الاصطدام)',
+                            'الجيولوجيا وتكتونية الصفائح والتشوهات البنيوية'
+                        ]
+                    }
+                ]
+            }
+        };
+
+        // ==========================================
+        // 2. STATE & DEFAULT EXERCISES DATABASE
+        // ==========================================
+        let currentSubject = 'physics';
+        let currentStream = 'علوم تجريبية';
+        let selectedUnitId = null;
+        let selectedSubtopic = null;
+        let activeTab = 'statement';
+        let currentViewingEx = null;
+        let showBookmarksOnly = false;
+        let isAdminLoggedIn = false;
+
+        let tempStatementUpload = null;
+        let tempSolutionUpload = null;
+
+        let exercisesDB = JSON.parse(localStorage.getItem('dz_bac_exercises_v3')) || [
+            {
+                id: 'ex_1',
+                subject: 'physics',
+                unitId: 'phy_u2',
+                subtopic: 'حركة القذيفة في حقل ثقالي منتظم',
+                stream: 'علوم تجريبية',
+                year: 'BAC 2024',
+                difficulty: 'متوسط',
+                title: 'التمرين الأول: دراسة حركة قذيفة في الهواء (بكالوريا 2024 موضوع أول)',
+                statementType: 'pdf',
+                statementUrl: 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf',
+                solutionType: 'pdf',
+                solutionUrl: 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf',
+                videoUrl: 'https://youtube.com',
+                notes: 'تمرين شامل يتضمن إيجاد المعادلات الزمنية ومعادلة المسار.'
+            },
+            {
+                id: 'ex_2',
+                subject: 'physics',
+                unitId: 'phy_u2',
+                subtopic: 'السقوط الشاقولي (الحر والحقيقي)',
+                stream: 'علوم تجريبية',
+                year: 'BAC 2023',
+                difficulty: 'ممتاز للتحضير',
+                title: 'التمرين الثاني: السقوط الشاقولي لجسم كروي في مائع (بكالوريا 2023)',
+                statementType: 'pdf',
+                statementUrl: 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf',
+                solutionType: 'pdf',
+                solutionUrl: 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf',
+                videoUrl: '',
+                notes: 'إثبات المعادلة التفاضلية للسرعة والتحليل البعدي.'
+            }
+        ];
+
+        let solvedExercises = JSON.parse(localStorage.getItem('dz_bac_solved')) || [];
+        let bookmarkedExercises = JSON.parse(localStorage.getItem('dz_bac_bookmarks')) || [];
+
+        // ==========================================
+        // 3. INITIALIZATION & UI RENDERING
+        // ==========================================
+        window.onload = function() {
+            renderSubjectTabs();
+            renderStreamPills();
+            populateYearFilter();
+            renderSidebar();
+            renderExercises();
+            updateBookmarkBadge();
+            lucide.createIcons();
+        };
+
+        function renderSubjectTabs() {
+            const container = document.getElementById('subjectTabs');
+            container.innerHTML = '';
+            
+            Object.values(CURRICULUM).forEach(sub => {
+                const isActive = sub.id === currentSubject;
+                const btn = document.createElement('button');
+                btn.onclick = () => {
+                    currentSubject = sub.id;
+                    selectedUnitId = null;
+                    selectedSubtopic = null;
+                    renderSubjectTabs();
+                    renderSidebar();
+                    renderExercises();
+                    updateBreadcrumb();
+                };
+                btn.className = `px-4 py-2 rounded-xl text-xs sm:text-sm font-extrabold flex items-center gap-2 transition shrink-0 ${
+                    isActive 
+                        ? 'bg-indigo-600 text-white shadow-sm shadow-indigo-600/30' 
+                        : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
+                }`;
+                btn.innerHTML = `<i data-lucide="${sub.icon}" class="w-4 h-4"></i><span>${sub.name}</span>`;
+                container.appendChild(btn);
+            });
+            lucide.createIcons();
+        }
+
+        function renderStreamPills() {
+            const container = document.getElementById('streamPills');
+            container.innerHTML = '';
+            const streams = ['علوم تجريبية', 'رياضيات', 'تقني رياضي'];
+
+            streams.forEach(stream => {
+                const isActive = stream === currentStream;
+                const btn = document.createElement('button');
+                btn.onclick = () => {
+                    currentStream = stream;
+                    renderStreamPills();
+                    renderSidebar();
+                    renderExercises();
+                };
+                btn.className = `px-3 py-1 rounded-lg text-xs font-bold transition ${
+                    isActive 
+                        ? 'bg-emerald-600 text-white shadow-sm' 
+                        : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700'
+                }`;
+                btn.innerText = stream;
+                container.appendChild(btn);
+            });
+        }
+
+        function populateYearFilter() {
+            const select = document.getElementById('yearFilter');
+            for (let y = 2026; y >= 2009; y--) {
+                const opt = document.createElement('option');
+                opt.value = `BAC ${y}`;
+                opt.innerText = `بكالوريا ${y}`;
+                select.appendChild(opt);
+            }
+        }
+
+        function renderSidebar() {
+            const container = document.getElementById('topicSidebar');
+            container.innerHTML = '';
+            const subjectData = CURRICULUM[currentSubject];
+
+            subjectData.units.forEach(unit => {
+                if (unit.exclusiveStreams && !unit.exclusiveStreams.includes(currentStream)) {
+                    return;
+                }
+
+                const isUnitSelected = selectedUnitId === unit.id;
+                const unitDiv = document.createElement('div');
+                unitDiv.className = `rounded-xl border transition overflow-hidden ${
+                    isUnitSelected 
+                        ? 'border-indigo-500 bg-indigo-50/40 dark:bg-indigo-950/20' 
+                        : 'border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/50'
+                }`;
+
+                const headerBtn = document.createElement('button');
+                headerBtn.onclick = () => {
+                    selectedUnitId = isUnitSelected ? null : unit.id;
+                    selectedSubtopic = null;
+                    renderSidebar();
+                    renderExercises();
+                    updateBreadcrumb();
+                };
+                headerBtn.className = 'w-full p-3 text-right flex items-center justify-between gap-2 font-bold text-xs text-slate-800 dark:text-slate-200';
+                headerBtn.innerHTML = `
+                    <span class="truncate">${unit.title}</span>
+                    <i data-lucide="${isUnitSelected ? 'chevron-down' : 'chevron-left'}" class="w-4 h-4 text-slate-400 shrink-0"></i>
+                `;
+                unitDiv.appendChild(headerBtn);
+
+                if (isUnitSelected) {
+                    const subList = document.createElement('div');
+                    subList.className = 'px-3 pb-3 space-y-1.5 border-t border-slate-100 dark:border-slate-800/80 pt-2';
+                    
+                    unit.subtopics.forEach(sub => {
+                        const isSubSelected = selectedSubtopic === sub;
+                        const subBtn = document.createElement('button');
+                        subBtn.onclick = (e) => {
+                            e.stopPropagation();
+                            selectedSubtopic = isSubSelected ? null : sub;
+                            renderSidebar();
+                            renderExercises();
+                            updateBreadcrumb();
+                        };
+                        subBtn.className = `w-full text-right px-3 py-1.5 rounded-lg text-xs font-semibold transition flex items-center gap-2 ${
+                            isSubSelected
+                                ? 'bg-indigo-600 text-white'
+                                : 'text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-800'
+                        }`;
+                        subBtn.innerHTML = `<span class="w-1.5 h-1.5 rounded-full ${isSubSelected ? 'bg-white' : 'bg-indigo-500'}"></span><span class="truncate">${sub}</span>`;
+                        subList.appendChild(subBtn);
+                    });
+                    unitDiv.appendChild(subList);
+                }
+
+                container.appendChild(unitDiv);
+            });
+            lucide.createIcons();
+        }
+
+        function updateBreadcrumb() {
+            const subObj = CURRICULUM[currentSubject];
+            document.getElementById('breadcrumbSubject').innerText = subObj.name;
+            
+            let unitTitle = 'جميع الوحدات';
+            if (selectedUnitId) {
+                const u = subObj.units.find(x => x.id === selectedUnitId);
+                if (u) unitTitle = u.title;
+            }
+            document.getElementById('breadcrumbUnit').innerText = selectedSubtopic ? `${unitTitle} / ${selectedSubtopic}` : unitTitle;
+            document.getElementById('feedHeading').innerText = selectedSubtopic ? `تمارين: ${selectedSubtopic}` : `تمارين ${subObj.name}`;
+        }
+
+        function renderExercises() {
+            const grid = document.getElementById('exercisesGrid');
+            const emptyState = document.getElementById('emptyState');
+            grid.innerHTML = '';
+
+            const searchKey = (document.getElementById('searchInput').value || document.getElementById('searchInputMobile').value || '').toLowerCase();
+            const yearVal = document.getElementById('yearFilter').value;
+            const diffVal = document.getElementById('difficultyFilter').value;
+
+            const filtered = exercisesDB.filter(ex => {
+                if (ex.subject !== currentSubject) return false;
+                if (ex.stream !== 'جميع الشعب' && ex.stream !== currentStream) return false;
+                if (showBookmarksOnly && !bookmarkedExercises.includes(ex.id)) return false;
+                if (selectedUnitId && ex.unitId !== selectedUnitId) return false;
+                if (selectedSubtopic && ex.subtopic !== selectedSubtopic) return false;
+                if (yearVal !== 'all' && !ex.year.includes(yearVal.replace('BAC ', ''))) return false;
+                if (diffVal !== 'all' && ex.difficulty !== diffVal) return false;
+
+                if (searchKey) {
+                    const matchText = (ex.title + ' ' + ex.subtopic + ' ' + ex.year + ' ' + (ex.notes || '')).toLowerCase();
+                    if (!matchText.includes(searchKey)) return false;
+                }
+
+                return true;
+            });
+
+            document.getElementById('resultsCount').innerText = `${filtered.length} تمرين`;
+
+            if (filtered.length === 0) {
+                emptyState.classList.remove('hidden');
+            } else {
+                emptyState.classList.add('hidden');
+                filtered.forEach(ex => {
+                    const isSolved = solvedExercises.includes(ex.id);
+                    const isBookmarked = bookmarkedExercises.includes(ex.id);
+
+                    const card = document.createElement('div');
+                    card.className = `bg-white dark:bg-slate-900 rounded-2xl border p-4 shadow-sm hover:shadow-md transition flex flex-col justify-between gap-3 ${
+                        isSolved ? 'border-emerald-500/50 bg-emerald-50/20 dark:bg-emerald-950/10' : 'border-slate-200 dark:border-slate-800'
+                    }`;
+
+                    card.innerHTML = `
+                        <div class="space-y-2">
+                            <div class="flex items-center justify-between gap-2">
+                                <div class="flex items-center gap-1.5 flex-wrap">
+                                    <span class="text-[11px] font-extrabold px-2.5 py-0.5 rounded-lg bg-indigo-100 text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300">${ex.year}</span>
+                                    <span class="text-[11px] font-semibold px-2.5 py-0.5 rounded-lg bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300">${ex.stream}</span>
+                                    <span class="text-[11px] font-semibold px-2.5 py-0.5 rounded-lg bg-amber-100 text-amber-700 dark:bg-amber-950 dark:text-amber-300">${ex.difficulty}</span>
+                                </div>
+                                <div class="flex items-center gap-1">
+                                    <button onclick="toggleBookmark('${ex.id}', event)" class="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 ${isBookmarked ? 'text-amber-500' : 'text-slate-400'}">
+                                        <i data-lucide="bookmark" class="w-4 h-4" ${isBookmarked ? 'fill="currentColor"' : ''}></i>
+                                    </button>
+                                    <button onclick="toggleSolved('${ex.id}', event)" class="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 ${isSolved ? 'text-emerald-500' : 'text-slate-400'}" title="تحديد كمحلول">
+                                        <i data-lucide="check-circle-2" class="w-4 h-4" ${isSolved ? 'fill="currentColor"' : ''}></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div>
+                                <span class="text-[11px] font-bold text-indigo-600 dark:text-indigo-400 block mb-0.5">${ex.subtopic}</span>
+                                <h4 class="font-extrabold text-sm sm:text-base text-slate-900 dark:text-white leading-snug">${ex.title}</h4>
+                            </div>
+                            ${ex.notes ? `<p class="text-xs text-slate-500 dark:text-slate-400 line-clamp-2">${ex.notes}</p>` : ''}
+                        </div>
+
+                        <div class="pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between gap-2">
+                            <span class="text-[11px] font-bold px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
+                                ${ex.statementType === 'pdf' ? '📄 ملف PDF' : '🖼️ صورة'}
+                            </span>
+                            <button onclick="openPreviewModal('${ex.id}')" class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold shadow-sm flex items-center gap-1.5 transition">
+                                <i data-lucide="eye" class="w-4 h-4"></i>
+                                <span>معاينة التمرين والحل</span>
+                            </button>
+                        </div>
+                    `;
+                    grid.appendChild(card);
+                });
+            }
+
+            updateProgressBar();
+            lucide.createIcons();
+        }
+
+        function openPreviewModal(exId) {
+            currentViewingEx = exercisesDB.find(x => x.id === exId);
+            if (!currentViewingEx) return;
+
+            activeTab = 'statement';
+            updateModalView();
+            document.getElementById('previewModal').classList.remove('hidden');
+        }
+
+        function closePreviewModal() {
+            document.getElementById('previewModal').classList.add('hidden');
+            currentViewingEx = null;
+        }
+
+        function switchModalTab(tab) {
+            activeTab = tab;
+            updateModalView();
+        }
+
+        function updateModalView() {
+            if (!currentViewingEx) return;
+
+            document.getElementById('modalTitle').innerText = currentViewingEx.title;
+            document.getElementById('modalYearBadge').innerText = currentViewingEx.year;
+            document.getElementById('modalStreamBadge').innerText = currentViewingEx.stream;
+            document.getElementById('modalSubtopicBadge').innerText = currentViewingEx.subtopic;
+
+            const btnStatement = document.getElementById('tabBtnStatement');
+            const btnSolution = document.getElementById('tabBtnSolution');
+            const externalLink = document.getElementById('modalExternalFileLink');
+            const videoLink = document.getElementById('modalVideoLink');
+            const bodyContent = document.getElementById('modalBodyContent');
+
+            if (activeTab === 'statement') {
+                btnStatement.className = "px-4 py-2 text-xs sm:text-sm font-bold rounded-t-xl border-b-2 border-indigo-600 text-indigo-600 dark:text-indigo-400 bg-white dark:bg-slate-900 flex items-center gap-1.5";
+                btnSolution.className = "px-4 py-2 text-xs sm:text-sm font-bold rounded-t-xl border-b-2 border-transparent text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 flex items-center gap-1.5";
+                
+                let targetUrl = currentViewingEx.statementUrl || '';
+                if (targetUrl.includes('drive.google.com') && !targetUrl.includes('/preview')) {
+                    targetUrl = targetUrl.replace('/view', '/preview').replace('/edit', '/preview');
+                }
+                externalLink.href = targetUrl || '#';
+                
+                if (currentViewingEx.statementType === 'pdf' || targetUrl.includes('.pdf') || targetUrl.includes('drive.google.com')) {
+                    bodyContent.innerHTML = `<iframe src="${targetUrl}" class="w-full h-full rounded-xl border border-slate-200 dark:border-slate-800 bg-white" title="موضوع التمرين"></iframe>`;
+                } else {
+                    bodyContent.innerHTML = `<div class="flex flex-col items-center justify-center h-full"><img src="${targetUrl}" alt="موضوع التمرين" class="max-h-[70vh] rounded-xl object-contain shadow-md" onerror="this.src='https://placehold.co/600x400/1e293b/ffffff?text=تعذر+تحميل+الصورة'"></div>`;
+                }
+            } else {
+                btnStatement.className = "px-4 py-2 text-xs sm:text-sm font-bold rounded-t-xl border-b-2 border-transparent text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 flex items-center gap-1.5";
+                btnSolution.className = "px-4 py-2 text-xs sm:text-sm font-bold rounded-t-xl border-b-2 border-emerald-600 text-emerald-600 dark:text-emerald-400 bg-white dark:bg-slate-900 flex items-center gap-1.5";
+
+                let targetUrl = currentViewingEx.solutionUrl || '';
+                if (targetUrl.includes('drive.google.com') && !targetUrl.includes('/preview')) {
+                    targetUrl = targetUrl.replace('/view', '/preview').replace('/edit', '/preview');
+                }
+                externalLink.href = targetUrl || '#';
+
+                if (currentViewingEx.solutionType === 'pdf' || targetUrl.includes('.pdf') || targetUrl.includes('drive.google.com')) {
+                    bodyContent.innerHTML = `<iframe src="${targetUrl}" class="w-full h-full rounded-xl border border-slate-200 dark:border-slate-800 bg-white" title="الحل النموذجي"></iframe>`;
+                } else {
+                    bodyContent.innerHTML = `<div class="flex flex-col items-center justify-center h-full"><img src="${targetUrl}" alt="الحل النموذجي" class="max-h-[70vh] rounded-xl object-contain shadow-md" onerror="this.src='https://placehold.co/600x400/1e293b/ffffff?text=تعذر+تحميل+صورة+الحل'"></div>`;
+                }
+            }
+
+            if (currentViewingEx.videoUrl) {
+                videoLink.href = currentViewingEx.videoUrl;
+                videoLink.classList.remove('hidden');
+            } else {
+                videoLink.classList.add('hidden');
+            }
+
+            const isSolved = solvedExercises.includes(currentViewingEx.id);
+            document.getElementById('modalSolvedBtn').className = `px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 transition border ${
+                isSolved ? 'bg-emerald-500 text-white border-emerald-600' : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700'
+            }`;
+
+            const isBookmarked = bookmarkedExercises.includes(currentViewingEx.id);
+            document.getElementById('modalBookmarkBtn').className = `px-3.5 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 transition border ${
+                isBookmarked ? 'bg-amber-500 text-white border-amber-600' : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700'
+            }`;
+
+            lucide.createIcons();
+        }
+
+        function toggleCurrentSolved() {
+            if (!currentViewingEx) return;
+            toggleSolved(currentViewingEx.id);
+            updateModalView();
+            renderExercises();
+        }
+
+        function toggleCurrentBookmark() {
+            if (!currentViewingEx) return;
+            toggleBookmark(currentViewingEx.id);
+            updateModalView();
+            renderExercises();
+        }
+
+        function toggleSolved(id, e) {
+            if (e) e.stopPropagation();
+            if (solvedExercises.includes(id)) {
+                solvedExercises = solvedExercises.filter(x => x !== id);
+                showToast('تم إلغاء تحديد التمرين');
+            } else {
+                solvedExercises.push(id);
+                showToast('أحسنت! تم تسجيل التمرين كمحلول ✓');
+            }
+            localStorage.setItem('dz_bac_solved', JSON.stringify(solvedExercises));
+            renderExercises();
+        }
+
+        function toggleBookmark(id, e) {
+            if (e) e.stopPropagation();
+            if (bookmarkedExercises.includes(id)) {
+                bookmarkedExercises = bookmarkedExercises.filter(x => x !== id);
+                showToast('تمت الإزالة من قائمة المراجعة');
+            } else {
+                bookmarkedExercises.push(id);
+                showToast('تم حفظ التمرين للمراجعة لاحقاً ⭐');
+            }
+            localStorage.setItem('dz_bac_bookmarks', JSON.stringify(bookmarkedExercises));
+            updateBookmarkBadge();
+            renderExercises();
+        }
+
+        function toggleBookmarksFilter() {
+            showBookmarksOnly = !showBookmarksOnly;
+            const btn = document.getElementById('bookmarkFilterBtn');
+            if (showBookmarksOnly) {
+                btn.className = "p-2.5 rounded-xl border border-amber-500 bg-amber-500 text-white transition flex items-center gap-1.5 text-xs font-semibold shadow-sm";
+                showToast('عرض التمارين المحفوظة للمراجعة فقط');
+            } else {
+                btn.className = "p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition flex items-center gap-1.5 text-xs font-semibold";
+                showToast('عرض كل التمارين');
+            }
+            renderExercises();
+        }
+
+        function updateBookmarkBadge() {
+            document.getElementById('bookmarkCountBadge').innerText = bookmarkedExercises.length;
+        }
+
+        function updateProgressBar() {
+            const subjectExercises = exercisesDB.filter(ex => ex.subject === currentSubject && (ex.stream === 'جميع الشعب' || ex.stream === currentStream));
+            const total = subjectExercises.length;
+            const solvedCount = subjectExercises.filter(ex => solvedExercises.includes(ex.id)).length;
+
+            document.getElementById('progressText').innerText = `${solvedCount} / ${total}`;
+            const pct = total > 0 ? Math.round((solvedCount / total) * 100) : 0;
+            document.getElementById('progressBar').style.width = `${pct}%`;
+        }
+
+        function promptAdminAuth() {
+            if (isAdminLoggedIn) {
+                openAddModal();
+            } else {
+                document.getElementById('adminAuthModal').classList.remove('hidden');
+                document.getElementById('adminPasswordInput').value = '';
+                document.getElementById('adminPasswordInput').focus();
+            }
+        }
+
+        function closeAdminAuthModal() {
+            document.getElementById('adminAuthModal').classList.add('hidden');
+        }
+
+        function verifyAdminPassword() {
+            const pwd = document.getElementById('adminPasswordInput').value;
+            if (pwd === 'ggbruh999') {
+                isAdminLoggedIn = true;
+                closeAdminAuthModal();
+                showToast('تم التحقق بنجاح! مرحباً بك بصفتك مشرفاً');
+                openAddModal();
+            } else {
+                showToast('كلمة المرور خاطئة!');
+            }
+        }
+
+        function openAddModal() {
+            document.getElementById('addModal').classList.remove('hidden');
+            populateNewSubjectSelect();
+        }
+
+        function closeAddModal() {
+            document.getElementById('addModal').classList.add('hidden');
+        }
+
+        function populateNewSubjectSelect() {
+            const subjSelect = document.getElementById('newSubject');
+            subjSelect.innerHTML = '';
+            Object.values(CURRICULUM).forEach(sub => {
+                const opt = document.createElement('option');
+                opt.value = sub.id;
+                opt.innerText = sub.name;
+                if (sub.id === currentSubject) opt.selected = true;
+                subjSelect.appendChild(opt);
+            });
+            populateNewUnitSelect();
+        }
+
+        function populateNewUnitSelect() {
+            const subjId = document.getElementById('newSubject').value;
+            const unitSelect = document.getElementById('newUnit');
+            unitSelect.innerHTML = '';
+            const subObj = CURRICULUM[subjId];
+            
+            subObj.units.forEach(u => {
+                const opt = document.createElement('option');
+                opt.value = u.id;
+                opt.innerText = u.title;
+                unitSelect.appendChild(opt);
+            });
+            populateNewSubtopicSelect();
+        }
+
+        function populateNewSubtopicSelect() {
+            const subjId = document.getElementById('newSubject').value;
+            const unitId = document.getElementById('newUnit').value;
+            const subtopicSelect = document.getElementById('newSubtopic');
+            subtopicSelect.innerHTML = '';
+
+            const subObj = CURRICULUM[subjId];
+            const u = subObj.units.find(x => x.id === unitId);
+            if (u) {
+                u.subtopics.forEach(st => {
+                    const opt = document.createElement('option');
+                    opt.value = st;
+                    opt.innerText = st;
+                    subtopicSelect.appendChild(opt);
+                });
+            }
+        }
+
+        function handleLocalFileSelect(e, type) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(evt) {
+                const base64Data = evt.target.result;
+                if (type === 'statement') {
+                    document.getElementById('statementFileStatus').innerText = `تم اختيار: ${file.name}`;
+                    document.getElementById('newStatementUrl').value = base64Data;
+                } else {
+                    document.getElementById('solutionFileStatus').innerText = `تم اختيار: ${file.name}`;
+                    document.getElementById('newSolutionUrl').value = base64Data;
+                }
+                showToast('تم تحميل الملف بنجاح');
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function handleAddExercise(e) {
+            e.preventDefault();
+            const subject = document.getElementById('newSubject').value;
+            const unitId = document.getElementById('newUnit').value;
+            const subtopic = document.getElementById('newSubtopic').value;
+            const stream = document.getElementById('newStream').value;
+            const year = document.getElementById('newYear').value;
+            const difficulty = document.getElementById('newDifficulty').value;
+            const title = document.getElementById('newTitle').value;
+            const videoUrl = document.getElementById('newVideo').value;
+            const notes = document.getElementById('newNotes').value;
+
+            let statementUrl = document.getElementById('newStatementUrl').value.trim();
+            let solutionUrl = document.getElementById('newSolutionUrl').value.trim();
+
+            let statementType = document.getElementById('newStatementType').value;
+            if (statementType === 'auto') {
+                statementType = (statementUrl.includes('.pdf') || statementUrl.includes('drive.google.com')) ? 'pdf' : 'image';
+            }
+
+            let solutionType = document.getElementById('newSolutionType').value;
+            if (solutionType === 'auto') {
+                solutionType = (solutionUrl.includes('.pdf') || solutionUrl.includes('drive.google.com')) ? 'pdf' : 'image';
+            }
+
+            if (!statementUrl) {
+                showToast('يرجى إرفاق ملف موضوع التمرين أو وضع رابط صحيح');
+                return;
+            }
+
+            const newEx = {
+                id: 'ex_' + Date.now(),
+                subject,
+                unitId,
+                subtopic,
+                stream,
+                year,
+                difficulty,
+                title,
+                statementType,
+                statementUrl,
+                solutionType,
+                solutionUrl: solutionUrl || statementUrl,
+                videoUrl,
+                notes
+            };
+
+            exercisesDB.unshift(newEx);
+            localStorage.setItem('dz_bac_exercises_v3', JSON.stringify(exercisesDB));
+            
+            closeAddModal();
+            document.getElementById('addExerciseForm').reset();
+            document.getElementById('statementFileStatus').innerText = 'لم يتم اختيار ملف محلي';
+            document.getElementById('solutionFileStatus').innerText = 'لم يتم اختيار ملف محلي';
+
+            showToast('تم إضافة التمرين بنجاح إلى البنك!');
+            renderExercises();
+        }
+
+        function exportDatabase() {
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(exercisesDB, null, 2));
+            const dlAnchor = document.createElement('a');
+            dlAnchor.setAttribute("href", dataStr);
+            dlAnchor.setAttribute("download", "dz_bac_bank_export.json");
+            document.body.appendChild(dlAnchor);
+            dlAnchor.click();
+            dlAnchor.remove();
+            showToast('تم تصدير قاعدة البيانات بصيغة JSON بنجاح');
+        }
+
+        function importDatabase(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(evt) {
+                try {
+                    const imported = JSON.parse(evt.target.result);
+                    if (Array.isArray(imported)) {
+                        exercisesDB = imported;
+                        localStorage.setItem('dz_bac_exercises_v3', JSON.stringify(exercisesDB));
+                        renderExercises();
+                        showToast('تم استيراد قاعدة البيانات بنجاح!');
+                    } else {
+                        showToast('ملف JSON غير صالح');
+                    }
+                } catch (err) {
+                    showToast('خطأ في قراءة ملف JSON');
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        function resetAllFilters() {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('searchInputMobile').value = '';
+            document.getElementById('yearFilter').value = 'all';
+            document.getElementById('difficultyFilter').value = 'all';
+            showBookmarksOnly = false;
+            resetTopicSelection();
+        }
+
+        function resetTopicSelection() {
+            selectedUnitId = null;
+            selectedSubtopic = null;
+            renderSidebar();
+            renderExercises();
+            updateBreadcrumb();
+        }
+
+        function toggleDarkMode() {
+            const html = document.documentElement;
+            if (html.classList.contains('dark')) {
+                html.classList.remove('dark');
+                localStorage.setItem('dz_bac_theme', 'light');
+            } else {
+                html.classList.add('dark');
+                localStorage.setItem('dz_bac_theme', 'dark');
+            }
+        }
+
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toastMsg').innerText = msg;
+            toast.classList.remove('hidden');
+            setTimeout(() => {
+                toast.classList.add('hidden');
+            }, 3000);
+        }
+
+        document.getElementById('searchInput').addEventListener('input', renderExercises);
+        document.getElementById('searchInputMobile').addEventListener('input', renderExercises);
+    </script>
+</body>
+</html>
